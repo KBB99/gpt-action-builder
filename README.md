@@ -1,6 +1,6 @@
 # GPT-Action-Builder
 
-Related Medium article: (Coding the Future: Harnessing GPT-4 to Build AI Systems Capable of Achieving Any Objective)[https://medium.com/@kenton_69720/coding-the-future-harnessing-gpt-4-to-build-develop-ai-systems-capable-of-achieving-any-objective-85d2f55dc052]
+Related Medium article: [Coding the Future: Harnessing GPT-4 to Build AI Systems Capable of Achieving Any Objective](https://medium.com/@kenton_69720/coding-the-future-harnessing-gpt-4-to-build-develop-ai-systems-capable-of-achieving-any-objective-85d2f55dc052)
 
 Install dependencies:
 ```bash
