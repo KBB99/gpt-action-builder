@@ -47,7 +47,7 @@ class BashTool:
                 result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True, cwd=self.directory, env=env_vars)
                 current_output = result.stdout.strip() if result.returncode == 0 else result.stderr.strip()
                 output += current_output + '\n'
-        if MAX_OUTPUT_LENGTH > 10000:
+        if len(output) > MAX_OUTPUT_LENGTH:
             return f"{output.strip()[:MAX_OUTPUT_LENGTH]} \n ###The rest of the response was truncated due to length####\n"  # Truncate the response to a maximum of 1,000 characters
         else:
             return output.strip()

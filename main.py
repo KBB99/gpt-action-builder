@@ -11,6 +11,8 @@ import os
 import pandas as pd
 import openai
 import numpy as np
+import argparse
+
 # Constants
 MAX_META_ITERS = 1
 TEMPERATURE = 0
@@ -205,6 +207,8 @@ def get_relevant_actions(goal, n=5):
         List of relevant actions.
     """
     # return ""
+    if not os.path.isfile('successful_invocations.csv'):
+        return "None"
     process_actions_prompt = """
         Here is the goal we are trying to accomplish: `{goal}`.
         Here are the actions that are semantically similar to our goal:\n```{execution_output}```\n.
@@ -323,11 +327,18 @@ def main(goal, max_meta_iters=1):
         print(f'Error: {e}')
         breakpoint()
 
+# Create the argument parser
+parser = argparse.ArgumentParser()
+
+# Add the desired arguments
+parser.add_argument("--goal", help="Specify the goal")
+
 if __name__ == '__main__':
     """Entry point of the script.
 
     Here we set the goal and call the main function.
     """
     # smol_ai_repo = 'https://github.com/smol-ai/developer.git'
-    goal = f"Write a short story about an AI enthusiast. Send it to <email>."
-    main(goal)
+    # goal = f"Write a short story about an AI enthusiast. Send it to <email>."
+    args = parser.parse_args()
+    main(args.goal)
