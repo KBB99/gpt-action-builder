@@ -250,7 +250,8 @@ def main(goal, max_meta_iters=1):
         constraints = "You cannot use the open command. Everything must be done in the terminal."
         tips = 'You are in a mac zshell.'\
         'To write to a file, use the echo command.'\
-        f"Your AWS credentials are already configured. {relevant_previous_actions}"
+        'If you are going to run a comand that stays running, run it in the background.'\
+        f"Relevant Actions:{relevant_previous_actions}"
         evaluation_prompt_template = """
         {execution_output}
 

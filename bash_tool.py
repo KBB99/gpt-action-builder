@@ -1,7 +1,12 @@
 import os
 import subprocess
+import datetime
 
-DEFAULT_DIRECTORY = '/tmp/ai2bash/playground/iteration1/'
+# Get the current minute
+current_minute = datetime.datetime.now().strftime("%Y%m%d%H%M")
+
+# Create the directory path based on the current minute
+DEFAULT_DIRECTORY = f"/tmp/ai2bash/playground/{current_minute}/"
 MAX_OUTPUT_LENGTH = 1000
 
 env_vars = os.environ.copy()
