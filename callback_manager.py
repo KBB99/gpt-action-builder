@@ -17,5 +17,4 @@ class CallbackManager(BaseCallbackHandler):
         Args:
             token (str): The new token received from the LLM.
         """
-        print(text)
         self.last_execution.append(text)

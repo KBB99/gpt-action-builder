@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-DEFAULT_DIRECTORY = '/tmp/ai2bash/playground/'
+DEFAULT_DIRECTORY = '/tmp/ai2bash/playground/iteration1/'
 MAX_OUTPUT_LENGTH = 1000
 
 env_vars = os.environ.copy()
