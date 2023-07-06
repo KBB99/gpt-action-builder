@@ -197,7 +197,7 @@ def get_new_instructions(meta_output):
     
     return constraints, tips
 
-def get_relevant_actions(goal, n=5):
+def get_relevant_actions(goal, n=1):
     """Returns relevant actions for the goal.
 
     Args:
