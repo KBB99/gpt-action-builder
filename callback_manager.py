@@ -11,10 +11,5 @@ class CallbackManager(BaseCallbackHandler):
         """Clear the last_execution list."""
         self.last_execution = []
     
-    def on_text(self, text: str, **kwargs) -> None:
-        """Handle a new token from the Language Learning Model (LLM).
-
-        Args:
-            token (str): The new token received from the LLM.
-        """
-        self.last_execution.append(text)
+    def on_llm_new_token(self, token: str, **kwargs: Any) -> Any:
+        self.last_execution.append(token)
