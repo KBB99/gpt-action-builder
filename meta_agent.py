@@ -1,7 +1,7 @@
 from langchain.chat_models import ChatOpenAI
 from langchain import PromptTemplate, LLMChain
 from prompts import get_meta_prompt_template
-from config import CONSTRAINTS, TIPS
+from config import CONSTRAINTS, TIPS_TEMPLATE
 from parsing import get_new_instructions
 
 def initialize_meta_chain():
@@ -30,7 +30,7 @@ def update_meta_chain_and_variables(extracted_actions_output, goal, david_instan
         tool_names="Bash Tool", 
         input=goal, 
         constraints=CONSTRAINTS, 
-        tips=TIPS, 
+        tips=TIPS_TEMPLATE, 
         agent_scratchpad=""
     )
     meta_output = meta_chain.predict(

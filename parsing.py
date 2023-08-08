@@ -7,6 +7,7 @@ from langchain import LLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain import PromptTemplate
 from prompts import get_process_actions_prompt_template 
+import argparse
 
 def initialize_chain(prompt_template):
     """Initializes and returns a goal evaluation chain."""
@@ -67,3 +68,20 @@ def get_relevant_actions(goal, n=1):
     relevant_actions_chain = initialize_chain(process_actions_prompt)
     relevant_actions = relevant_actions_chain.predict(execution_output=similar_actions, goal=goal)
     return relevant_actions
+
+def parse_arguments():
+    """
+    Parses command-line arguments.
+    
+    Returns:
+        goal (str): The parsed goal from the command-line arguments or from a text file.
+    """
+    parser = argparse.ArgumentParser(description="AI Meta Iteration Script")
+    parser.add_argument("--goal", help="Specify the goal", required=True)
+    args = parser.parse_args()
+
+    if args.goal.endswith('.txt'):
+        with open(args.goal, 'r') as file:
+            return file.read().strip()
+
+    return args.goal

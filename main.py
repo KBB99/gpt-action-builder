@@ -1,62 +1,56 @@
-from config import MAX_META_ITERS, CONSTRAINTS, TIPS
+from config import MAX_META_ITERS, CONSTRAINTS, TIPS_TEMPLATE, SUCCESS_INDICATOR
 from embedding_utils import load_or_create_dataframe, update_dataframe_based_on_evaluation
-from parsing import get_relevant_actions
+from parsing import get_relevant_actions, parse_arguments
 from prompts import get_init_prompt_template
 from base_agent import run_agent
 from meta_agent import update_meta_chain_and_variables
 from chains import initialize_chains
-import argparse
+import logging
 
-def main(goal, max_meta_iters=MAX_META_ITERS):
-    """Main execution function.
+def main(goal, max_meta_iters=MAX_META_ITERS, constraints=CONSTRAINTS, tips_template=TIPS_TEMPLATE):
+    """
+    Executes the main program flow.
 
     Args:
-        goal: The goal for the AI.
-        max_meta_iters: Maximum iterations for the meta AI.
+        goal (str): The goal for the AI.
+        max_meta_iters (int): Maximum iterations for the meta AI.
+        constraints (str): Constraints for the AI.
+        tips_template (str): Tips template for the AI.
 
     Returns:
         None.
     """
+    logging.info("Starting the main program execution.")
+    
     try:
-        df = load_or_create_dataframe()
-        david_instantiation_prompt = get_init_prompt_template()
-        evaluation_chain, extracted_actions_chain = initialize_chains()
+        embedding_dataframe = load_or_create_dataframe()
+        david_prompt = get_init_prompt_template()
+        evaluation_chain, actions_chain = initialize_chains()
 
-        for i in range(max_meta_iters):
-            print(f'[Episode {i+1}/{max_meta_iters}]')
-            relevant_previous_actions = get_relevant_actions(goal)
-            tips = TIPS.format(relevant_previous_actions)
-            execution_output = run_agent(goal, david_instantiation_prompt, CONSTRAINTS, tips)
+        for iteration in range(max_meta_iters):
+            logging.info(f'[Episode {iteration + 1}/{max_meta_iters}]')
+            
+            previous_actions = get_relevant_actions(goal)
+            tips = tips_template.format(previous_actions)
+            
+            execution_output = run_agent(goal, david_prompt, constraints, tips)
+            
             evaluation_output = evaluation_chain.predict(execution_output=execution_output, goal=goal)
+            logging.info(f"Evaluation Output: {evaluation_output}")
 
-            print("evaluation Output:", evaluation_output)
-            extracted_actions_output = extracted_actions_chain.predict(execution_output=execution_output, goal=goal)
-            update_dataframe_based_on_evaluation(df, goal, david_instantiation_prompt, CONSTRAINTS, tips, execution_output, evaluation_output, extracted_actions_output)
+            actions_output = actions_chain.predict(execution_output=execution_output, goal=goal)
 
-            if 'yes' in evaluation_output.strip().lower():
+            update_dataframe_based_on_evaluation(embedding_dataframe, goal, david_prompt, constraints, tips, execution_output, evaluation_output, actions_output)
+
+            if SUCCESS_INDICATOR in evaluation_output.strip().lower():
                 break
 
-            update_meta_chain_and_variables(extracted_actions_output, goal, david_instantiation_prompt, execution_output)
+            update_meta_chain_and_variables(actions_output, goal, david_prompt, execution_output)
 
     except Exception as e:
-        print(f'Error: {e}')
+        logging.error(f"Error encountered: {e}", exc_info=True)  # exc_info logs the traceback
 
 if __name__ == '__main__':
-    """Entry point of the script.
-
-    Here we set the goal and call the main function.
-    """
-    # smol_ai_repo = 'https://github.com/smol-ai/developer.git'
-    # goal = f"Write a short story about an AI enthusiast. Send it to <email>."
-    # Create the argument parser
-    parser = argparse.ArgumentParser()
-
-    # Add the desired arguments
-    parser.add_argument("--goal", help="Specify the goal")
-    args = parser.parse_args()
-    if args.goal.endswith('.txt'):
-        with open(args.goal, 'r') as file:
-            goal = file.read().strip()
-    else:
-        goal = args.goal
+    logging.basicConfig(level=logging.INFO)  # set logging level
+    goal = parse_arguments()
     main(goal)
