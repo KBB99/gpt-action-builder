@@ -1,26 +1,12 @@
 from embedding_utils import generate_embedding
-from openai.embeddings_utils import get_embedding, cosine_similarity
+# from openai.embeddings_utils import cosine_similarity
+from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import re
 import os
-from langchain import LLMChain
-from langchain.chat_models import ChatOpenAI
-from langchain import PromptTemplate
 from prompts import get_process_actions_prompt_template 
+from chains import initialize_chain
 import argparse
-
-def initialize_chain(prompt_template):
-    """Initializes and returns a goal evaluation chain."""
-    evaluation_prompt = PromptTemplate(
-        input_variables=["execution_output", "goal"], 
-        template=prompt_template
-    )
-    evaluation_chain = LLMChain(
-        llm=ChatOpenAI(temperature=0, model_name="gpt-4"), 
-        prompt=evaluation_prompt, 
-        verbose=True, 
-    )
-    return evaluation_chain
 
 def get_new_instructions(meta_output):
     """Extracts and returns new constraints and tips from meta output.
@@ -68,6 +54,19 @@ def get_relevant_actions(goal, n=1):
     relevant_actions_chain = initialize_chain(process_actions_prompt)
     relevant_actions = relevant_actions_chain.predict(execution_output=similar_actions, goal=goal)
     return relevant_actions
+
+def get_similar_actions(query, df, top_n=5):
+    if df.empty:
+        return "None"
+    query_embedding = generate_embedding(query)
+    
+    # Compute similarities with all actions
+    similarities = df['action_embedding'].apply(lambda emb: cosine_similarity([emb], [query_embedding])[0][0])
+    
+    # Sort by similarity
+    top_indices = similarities.nlargest(top_n).index
+    return df.iloc[top_indices]
+
 
 def parse_arguments():
     """

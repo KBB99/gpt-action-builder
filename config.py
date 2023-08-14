@@ -10,6 +10,7 @@ CONSTRAINTS = "You cannot use the open command. Everything must be done in the t
 TIPS_TEMPLATE = """You are in a mac zshell. 
 To write to a file, use the echo command. 
 You start in an empty playground directory. 
-You MUST use CDK. CDK is already installed.
 Relevant Actions: {}"""
 SUCCESS_INDICATOR = "yes"
+ACTIONS_CSV_FILE_PATH = 'actions.csv'
+ACTIONS_CSV_COLUMNS = ['action', 'action_embedding']

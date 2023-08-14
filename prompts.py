@@ -85,9 +85,12 @@ def get_extracted_actions_prompt_template():
     Goal: {goal}
     {execution_output}
     Given the above execution output, extract the actions from the execution output. 
+    Place each action between the sequence '|||'. 
     Give the actions names like "Send an email" with a description like, "To send an email run ```mail -S <subject> < <data>```". 
     This information will be re-used in the subsequent iterations.
+    |||
     """
+
 
 def get_process_actions_prompt_template():
     return """
